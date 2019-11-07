@@ -3,38 +3,84 @@
 -- desc:   Randomly generate pixel gun icons
 -- script: moon
 
-N_UPPERS=8
-N_GRIPS=8
-
 S_UPPER=0
 S_GRIP=48
 
-upper=0
-grip=0
+N_PARTS = {
+	upper:8,
+	grip:8,
+}
 
-scale=3
+indices = {
+	upper:0,
+	grip:0,
+}
 
 modwrap=(x,m)->
 	(x%m+m)%m
 
+class Menu
+    new:(x=0,y=0,index=1)=>
+        @x=x
+        @y=y
+        @index=index
+        @items={}
+    
+    add:(text)=>
+        table.insert(@items,text)
+
+    prev:=>
+        i=@index-1
+        if i<1
+            @index=#@items
+        else
+            @index=i
+    
+    next:=>
+        i=@index+1
+        if i>#@items
+            @index=1
+        else
+            @index=i
+    
+    draw:(sel="> ",usel="  ",spc=10,col=15)=>
+        for k,v in ipairs(@items)
+            dy=@y+(k-1)*spc
+            if @index==k
+                print(sel..v.." "..indices[v],@x,dy,col)
+            else
+                print(usel..v.." "..indices[v],@x,dy,col)
+
+menu = Menu 128,20
+menu\add "upper"
+menu\add "grip"
+
+drawgun=(x,y,scale)->
+	-- Draw upper
+	spr (indices.upper+S_UPPER)*2,x,y+1*scale,0,scale,0,0,1,1
+	-- Draw barrel of upper
+	spr (indices.upper+S_UPPER)*2+1,x+8*scale,y+1*scale,0,scale,0,0,1,1
+	-- Draw grip
+	spr indices.grip+S_GRIP,x,y+(8-1)*scale,0,scale,0,0,1,1
+
 export TIC=->
+	var=menu.items[menu.index]
 	if btnp 0	-- up
-		upper=modwrap upper-1,N_UPPERS
+		menu\prev!
 	if btnp 1	-- down
-		upper=modwrap upper+1,N_UPPERS
-	if btnp 2	-- left
-		grip=modwrap grip-1,N_GRIPS
-	if btnp 3	-- right
-		grip=modwrap grip+1,N_GRIPS
+		menu\next!
+	if btnp(2) or btnp(5)	-- left or B
+		indices[var]=modwrap indices[var]-1,N_PARTS[var]
+	if btnp(3) or btnp(4)	-- right or A
+		indices[var]=modwrap indices[var]+1,N_PARTS[var]
 
 	cls 0
-	-- Draw upper
-	spr (upper+S_UPPER)*2,40,40+1*scale,0,scale,0,0,1,1
-	-- Draw barrel of upper
-	spr (upper+S_UPPER)*2+1,40+8*scale,40+1*scale,0,scale,0,0,1,1
-	-- Draw grip
-	spr grip+S_GRIP,40,40+(8-1)*scale,0,scale,0,0,1,1
-	print "pew pew pew!",84,84
+	-- Draw gun in multiple scales
+	drawgun 40,0,1
+	drawgun 35,12,2
+	drawgun 30,35,3
+	drawgun 25,70,4
+	menu\draw!
 
 -- <TILES>
 -- 000:0000000000000000000000000000000000aaaaee0a77aaee0aaaaaaa00a00000
