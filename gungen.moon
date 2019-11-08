@@ -58,10 +58,13 @@ class Menu
     draw:(sel="> ",usel="  ",spc=10,col=15)=>
         for k,v in ipairs(@items)
             dy=@y+(k-1)*spc
-            if @index==k
-                print(sel..v.." "..indices[v],@x,dy,col)
-            else
-                print(usel..v.." "..indices[v],@x,dy,col)
+			prefix=usel
+			if @index==k
+				prefix=sel
+			suffix=""
+			if k<#@items
+				suffix=" "..indices[v]
+			print prefix..v..suffix,@x,dy,col
 
 menu = Menu 128,20
 menu\add "upper"
@@ -70,6 +73,7 @@ menu\add "mag"
 menu\add "stock"
 menu\add "scope"
 menu\add "barrel"
+menu\add "shuffle..."
 
 drawgun=(x,y,scale)->
 	-- Draw grip
@@ -89,15 +93,22 @@ drawgun=(x,y,scale)->
 	spr S_UPPER+indices.upper*2+1,x+8*scale,y+1*scale,0,scale,0,0,1,1
 
 export TIC=->
-	var=menu.items[menu.index]
 	if btnp 0	-- up
 		menu\prev!
 	if btnp 1	-- down
 		menu\next!
-	if btnp(2) or btnp(5)	-- left or B
-		indices[var]=modwrap indices[var]-1,N_PARTS[var]
-	if btnp(3) or btnp(4)	-- right or A
-		indices[var]=modwrap indices[var]+1,N_PARTS[var]
+	if menu.index<#menu.items
+		var=menu.items[menu.index]
+		if btnp(2) or btnp(5)	-- left or B
+			indices[var]=modwrap indices[var]-1,N_PARTS[var]
+		if btnp(3) or btnp(4)	-- right or A
+			indices[var]=modwrap indices[var]+1,N_PARTS[var]
+	else
+		-- Shuffling
+		if btnp(2) or btnp(5) or btnp(3) or btnp(4)
+			for i=1,#menu.items-1
+				var=menu.items[i]
+				indices[var]=math.random(N_PARTS[var])-1
 
 	cls 0
 	-- Draw gun in multiple scales
