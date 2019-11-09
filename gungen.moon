@@ -11,6 +11,15 @@ S_SCOPE=128
 S_BARREL=144
 S_FGRIP=112
 
+-- left edge of upper - align stock here
+UPPER_LEFT={2,3,2,3,1,2,2,1,3,2,1,2,2,2,0,0,2,1}
+-- top edge of upper - align scope here
+UPPER_TOP={4,4,5,4,4,4,4,5,4,4,5,5,5,4,3,5,5,4}
+-- right edge of upper - align barrel here
+UPPER_RIGHT={4,5,5,4,4,3,4,3,5,8,4,5,5,3,2,0,4,1}
+-- position of barrel on the upper
+UPPER_BARREL_Y={5,5,6,5,5,5,6,6,5,6,6,6,6,6,6,6,6,6}
+
 N_PARTS = {
 	upper:18,
 	grip:16,
@@ -80,16 +89,16 @@ menu\add "fgrip"
 menu\add "shuffle..."
 
 drawgun=(x,y,scale)->
-	-- Draw stock
-	spr indices.stock+S_STOCK,x-(8-1)*scale,y+4*scale,0,scale,0,0,1,1
-	-- Draw scope
-	spr S_SCOPE+indices.scope*2,x,y-3*scale,0,scale,0,0,1,1
-	spr S_SCOPE+indices.scope*2+1,x+8*scale,y-3*scale,0,scale,0,0,1,1
+	-- Draw stock - up against upper's left
+	spr indices.stock+S_STOCK,x-(8-UPPER_LEFT[indices.upper+1])*scale,y+4*scale,0,scale,0,0,1,1
+	-- Draw scope - above upper
+	spr S_SCOPE+indices.scope*2,x,y-(7-UPPER_TOP[indices.upper+1])*scale,0,scale,0,0,1,1
+	spr S_SCOPE+indices.scope*2+1,x+8*scale,y-(7-UPPER_TOP[indices.upper+1])*scale,0,scale,0,0,1,1
 	-- Draw forward grip
 	spr indices.fgrip+S_FGRIP,x+(12-1)*scale,y+(8-1)*scale,0,scale,0,0,1,1
-	-- Draw barrel
-	spr S_BARREL+indices.barrel*2,x+8*scale,y+1*scale,0,scale,0,0,1,1
-	spr S_BARREL+indices.barrel*2+1,x+8*scale,y+1*scale,0,scale,0,0,1,1
+	-- Draw barrel - to the right of upper
+	spr S_BARREL+indices.barrel*2,x+(16-UPPER_RIGHT[indices.upper+1])*scale,y+(-5+UPPER_BARREL_Y[indices.upper+1])*scale,0,scale,0,0,1,1
+	spr S_BARREL+indices.barrel*2+1,x+(16-UPPER_RIGHT[indices.upper+1])*scale,y+(-5+UPPER_BARREL_Y[indices.upper+1])*scale,0,scale,0,0,1,1
 	-- Draw upper
 	spr S_UPPER+indices.upper*2,x,y+1*scale,0,scale,0,0,1,1
 	spr S_UPPER+indices.upper*2+1,x+8*scale,y+1*scale,0,scale,0,0,1,1
@@ -145,8 +154,8 @@ export TIC=->
 -- 017:00000000000000000000000000700000eee0000077777000eee0000000000000
 -- 018:0000000000000000000000000000ff70000777770077eeee0077777700000000
 -- 019:0000000000000000000000000000000000000000000000007000000000000000
--- 020:0000000000000000000000000000000000000000044444444444444444400000
--- 021:0000000000000000000000000000000000000000444000004440000000000000
+-- 020:0000000000000000000000000000000000000000004444440444444404440000
+-- 021:0000000000000000000000000000000000000000444400004444000000000000
 -- 022:0000000000000000000000000000000000000000004999990099999900000000
 -- 023:0000000000000000000000000000000000000000944000009440000000000000
 -- 024:0000000000000000000000000000000000000000007777770011111100000000
@@ -227,7 +236,7 @@ export TIC=->
 -- 152:00000000000000000000000000000000000000002277aa772277aa7700000000
 -- 153:0000000000000000000000000000000000000000110000001100000000000000
 -- 154:0000000000000000000000000000000000a00000111a00001111aaaa00000000
--- 156:000000000000000000000000000000009999900099999aaa9990000000000000
+-- 156:00000000000000000000000000000000000000009999900099999aaa99900000
 -- 158:0000000000000000000000000000000000000000ee999977a999900000000000
 -- </TILES>
 
