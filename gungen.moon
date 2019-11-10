@@ -62,13 +62,18 @@ indices = {
 	fgrip:0,
 }
 
+mllast=false
+mmlast=false
+mrlast=false
+
 modwrap=(x,m)->
 	(x%m+m)%m
 
 class Menu
-    new:(x=0,y=0,index=1)=>
+    new:(x=0,y=0,index=1,spc=10)=>
         @x=x
         @y=y
+		@spc=10
         @index=index
         @items={}
     
@@ -88,17 +93,31 @@ class Menu
             @index=1
         else
             @index=i
-    
-    draw:(sel="> ",usel="  ",spc=10,col=15)=>
+
+	onmousemove:(mx,my)=>
+		if mx<@x or mx>@x+60
+			return
+		for k,v in ipairs(@items)
+			if my<@y
+				continue
+			dy=@y+(k-1)*@spc
+			if my>dy+@spc
+				continue
+			@index=k
+			break
+
+    draw:(sel="> ",usel="  ",col=15)=>
         for k,v in ipairs(@items)
-            dy=@y+(k-1)*spc
+            dy=@y+(k-1)*@spc
 			prefix=usel
+			tcol=col
 			if @index==k
 				prefix=sel
+				tcol=6
 			suffix=""
 			if k<#@items
 				suffix=" "..indices[v]
-			print prefix..v..suffix,@x,dy,col
+			print prefix..v..suffix,@x,dy,tcol
 
 menu = Menu 140,20
 menu\add "upper"
@@ -143,15 +162,21 @@ export TIC=->
 		menu\prev!
 	if btnp 1	-- down
 		menu\next!
+	mx,my,ml,mm,mr=mouse!
+	menu\onmousemove mx,my
+
+	press1=btnp(3) or btnp(4) or (not mllast and ml)	-- right or A or lmb
+	press2=btnp(2) or btnp(5) or (not mrlast and mr)	-- left or B or rmb
+
 	if menu.index<#menu.items
 		var=menu.items[menu.index]
-		if btnp(2) or btnp(5)	-- left or B
-			indices[var]=modwrap indices[var]-1,N_PARTS[var]
-		if btnp(3) or btnp(4)	-- right or A
+		if press1
 			indices[var]=modwrap indices[var]+1,N_PARTS[var]
+		if press2
+			indices[var]=modwrap indices[var]-1,N_PARTS[var]
 	else
 		-- Shuffling
-		if btnp(2) or btnp(5) or btnp(3) or btnp(4)
+		if press1 or press2
 			for i=1,#menu.items-1
 				var=menu.items[i]
 				indices[var]=math.random(N_PARTS[var])-1
@@ -161,13 +186,16 @@ export TIC=->
 			-- Remove fgrip if no barrel
 			if indices.barrel==0
 				indices.fgrip=0
+	mllast=ml
+	mmlast=mm
+	mrlast=mr
 
 	cls 0
 	-- Draw gun in multiple scales
-	drawgun 45,0,1
-	drawgun 40,12,2
-	drawgun 35,35,3
-	drawgun 30,70,4
+	drawgun 47,0,1
+	drawgun 42,12,2
+	drawgun 37,35,3
+	drawgun 32,70,4
 	menu\draw!
 
 -- <TILES>
