@@ -1,27 +1,28 @@
 # TinyGunGen
 Randomly generate pixel gun icons
 
+![Random gun generator](https://media.giphy.com/media/jqraW7qNR9RWv1yF6p/giphy.gif)
+
 ## How this works
 
 Components of guns (can be mixed + matched):
 
 - Upper
-- Grip+trigger
-  - Pistol grip
-  - Stock grip
-- Stock (not valid with stock grip)
+- Grip
+- Stock
 - Magazine
-  - Forward
-  - Bullpup (requires stock)
-  - Pistol (requires pistol grip)
-- Forward grip/attachment
-- Scope/upper attachment
+- Forward grip
+- Scope
 - Barrel
 
 Examples:
 
-- Pistols: upper + pistol grip
-- PDW: upper + pistol grip + pistol mag + stock
-- SMG: upper + pistol grip + forward mag
-- Bolt-rifle: upper + stock grip + barrel
-- Sniper rifle: upper + pistol grip + stock + barrel + scope
+- Pistols: upper + grip
+- SMG: upper + grip + mag
+- Assault rifle: upper + grip + stock + barrel + mag
+- Sniper rifle: upper + grip + stock + barrel + scope
+
+## TODO
+
+- Bullpup configuration
+- More parts
