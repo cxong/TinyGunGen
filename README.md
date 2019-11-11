@@ -1,7 +1,7 @@
 # TinyGunGen
 Randomly generate pixel gun icons
 
-![Random gun generator](https://media.giphy.com/media/jqraW7qNR9RWv1yF6p/giphy.gif)
+[![Random gun generator](https://media.giphy.com/media/jqraW7qNR9RWv1yF6p/giphy.gif)](https://tic.computer/play?cart=984)
 
 ## How this works
 
